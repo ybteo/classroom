@@ -29,9 +29,7 @@ class _loginAccountState extends State<loginAccount> {
   bool _supportState = false;
   bool? _canCheckBiometrics;
   final MethodChannel _channel = MethodChannel('android_faceID');
-  bool faceAuthenticated = false;
-  bool fingerprintAuthenticated = false;
-  List<BiometricType> _availableBiometrics = [];
+  bool authenticated = false;
   
   TextEditingController emailController = TextEditingController();
 
@@ -54,8 +52,6 @@ class _loginAccountState extends State<loginAccount> {
 
   }
 
-
-  
   
   @override
   Widget build(BuildContext context) {
