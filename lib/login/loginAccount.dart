@@ -149,7 +149,7 @@ class _loginAccountState extends State<loginAccount> {
                       children: [
                         Image.asset('assets/image/logo/appleLogo.png', height: 20,),
                         const SizedBox(width: 8),
-                        Text('Continue with Apple',
+                        const Text('Continue with Apple',
                         textAlign: TextAlign.center,
                         style: TextStyle(color: Colors.black, fontSize: 13),
                         ),
@@ -177,7 +177,7 @@ class _loginAccountState extends State<loginAccount> {
                       children: [
                         Image.asset('assets/image/logo/fbLogo.png', height: 18,),
                         SizedBox(width: 8),
-                        Text('Continue with Facebook',
+                        const Text('Continue with Facebook',
                         textAlign: TextAlign.center,
                         style: TextStyle(color: Colors.black, fontSize: 13),
                         ),
@@ -205,7 +205,7 @@ class _loginAccountState extends State<loginAccount> {
                       children: [
                         Image.asset('assets/image/logo/googleLogo.png', height: 16,),
                         const SizedBox(width: 8),
-                        Text('Continue with Google',
+                        const Text('Continue with Google',
                         textAlign: TextAlign.center,
                         style: TextStyle(color: Colors.black, fontSize: 13),
                         ),
@@ -215,9 +215,7 @@ class _loginAccountState extends State<loginAccount> {
                 ),
                 const SizedBox(height: 20),
 
-                Text('or', style: fontBlack,),
-
-                const SizedBox(height: 20.0),
+                
                 const Text('Log in with Fingerprint or Face ID:'),
                 const SizedBox(height: 10.0),
 
@@ -225,7 +223,7 @@ class _loginAccountState extends State<loginAccount> {
                   onTap: (){
                     _authenticate();
                     },
-                  child: Row(
+                  child: const Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
 
@@ -334,8 +332,7 @@ class _loginAccountState extends State<loginAccount> {
       deviceSupportsBiometrics = false;
       print(e);
     }
-
-    if (!deviceSupportsBiometrics){
+    /*if (!deviceSupportsBiometrics){
       showDialog(
         context: context, 
         builder: (context) => AlertDialog(
@@ -354,10 +351,8 @@ class _loginAccountState extends State<loginAccount> {
     }
     setState(() {
       _canCheckBiometrics = deviceSupportsBiometrics;
-    });
-    
+    });*/   
   }
-
 
 }
 
