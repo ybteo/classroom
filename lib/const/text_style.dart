@@ -60,7 +60,7 @@ final heading1 = TextStyle(
 );
 
 final heading2 = TextStyle(
-  fontSize: 15,
+  fontSize: 13,
   fontWeight: FontWeight.bold,
   fontFamily: 'Heading 2',
   color: Colors.black,
