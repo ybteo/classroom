@@ -1,7 +1,3 @@
-/*import 'package:face_authenticator/face_authenticator.dart';
-import 'package:face_authenticator/result/face_authenticator_failure.dart';
-import 'package:face_authenticator/result/face_authenticator_result.dart';
-import 'package:face_authenticator/result/face_authenticator_success.dart';*/
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -25,7 +21,7 @@ class loginAccount extends StatefulWidget {
 
 class _loginAccountState extends State<loginAccount> {
 
-  late final LocalAuthentication auth;
+  late final LocalAuthentication auth = LocalAuthentication();
   bool _supportState = false;
   bool? _canCheckBiometrics;
   final MethodChannel _channel = MethodChannel('android_faceID');
@@ -42,19 +38,24 @@ class _loginAccountState extends State<loginAccount> {
   @override
   void initState(){
     super.initState();
-    auth = LocalAuthentication();
+    //_checkBiometrics();
+
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      _checkBiometrics();
+    });
+    //auth = LocalAuthentication();
     auth.isDeviceSupported().then(
       (bool isSupported) => setState(() {
-        _supportState = isSupported;
+       _supportState = isSupported;
       }),
-      );
-      _getAvailableBiometrics();
+     );
 
   }
 
   
   @override
   Widget build(BuildContext context) {
+    //_checkBiometrics();
     return Scaffold(
       appBar: AppBar(
       centerTitle: true,
@@ -147,7 +148,7 @@ class _loginAccountState extends State<loginAccount> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Image.asset('assets/image/logo/appleLogo.png', height: 20,),
-                        SizedBox(width: 8),
+                        const SizedBox(width: 8),
                         Text('Continue with Apple',
                         textAlign: TextAlign.center,
                         style: TextStyle(color: Colors.black, fontSize: 13),
@@ -203,7 +204,7 @@ class _loginAccountState extends State<loginAccount> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Image.asset('assets/image/logo/googleLogo.png', height: 16,),
-                        SizedBox(width: 8),
+                        const SizedBox(width: 8),
                         Text('Continue with Google',
                         textAlign: TextAlign.center,
                         style: TextStyle(color: Colors.black, fontSize: 13),
@@ -212,14 +213,19 @@ class _loginAccountState extends State<loginAccount> {
                     ),
                     ),
                 ),
+                const SizedBox(height: 20),
 
-                const SizedBox(height: 30.0),
+                Text('or', style: fontBlack,),
+
+                const SizedBox(height: 20.0),
                 const Text('Log in with Fingerprint or Face ID:'),
                 const SizedBox(height: 10.0),
 
                 GestureDetector(
-                  onTap: _authenticate,
-                  child: const Row(
+                  onTap: (){
+                    _authenticate();
+                    },
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
 
@@ -228,13 +234,7 @@ class _loginAccountState extends State<loginAccount> {
                       SizedBox(width: 30.0),
 
                       Image(image: AssetImage('assets/image/logo/face_id.png'), width: 40.0,height: 40.0),
-                          
-                          /*IconButton(
-                            onPressed: _authenticate, 
-                            icon: Image.asset('assets/image/logo/fingerprint.png', 
-                            width: 40.0, height:40.0),
-                            iconSize: 5.0,
-                            ),*/
+                  
                     ],
                       
                     
@@ -253,6 +253,7 @@ class _loginAccountState extends State<loginAccount> {
   }
 
   Future <void> _authenticate() async {
+    bool deviceSupportsBiometrics = false;
    try{
       bool authenticated = await auth.authenticate(
         localizedReason: 'Choose a biometric method for authentication.',
@@ -269,68 +270,51 @@ class _loginAccountState extends State<loginAccount> {
             MaterialPageRoute(
               builder: (context)=> homePage()),
               );
+        }else{
+          showDialog(
+            context: context, 
+            builder: (context) => AlertDialog(
+              title: Text('Authentication Failed', style: fontBlack3),
+              content: Text('Biometric authentication failed.', style: textBlack),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: (){
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('OK'),
+                  ),
+                ],
+
+            )
+            );
         }
         print("Authenticated: $authenticated ");
     }on PlatformException catch (e){
-      print(e);
+      //print(e);
+      if(!deviceSupportsBiometrics){
+          showDialog(
+            context: context, 
+            builder: (context) => AlertDialog(
+              title: Text('Biometric Authentication Not Supported', style: fontBlack3),
+              content: Text('No biometrics enrolled on this device.', style: textBlack),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: (){
+                    Navigator.of(context).pop();
+                  }, 
+                  child: Text('OK'),
+                ),
+              ],
+              
+            )
+              
+            
+          );
+      }setState(() {
+      _canCheckBiometrics = deviceSupportsBiometrics;
+    });
     }
   }
-
- /* Future <void> _authenticateWithFaceID() async {
-    final canCheck =  await auth.canCheckBiometrics;
-
-    if(canCheck){
-      List<BiometricType> availableBiometrics = await auth.getAvailableBiometrics();
-
-      if(availableBiometrics.contains(BiometricType.face)){
-        faceAuthenticated = await auth.authenticate(
-          localizedReason: 'Scan your face for authentication.',
-          options: const AuthenticationOptions(
-          stickyAuth: true,
-          useErrorDialogs: false,
-          biometricOnly: true,
-        ),
-          );
-          if (faceAuthenticated){
-          
-          Navigator.pushReplacement(
-            context, 
-            MaterialPageRoute(
-              builder: (context)=> homePage()),
-              );
-        }
-      }else{
-        print('can\'t check');
-      }
-       
-       
-    }
-    try{
-      bool authenticated = await auth.authenticate(
-        localizedReason: 'Scan your face for authentication.',
-        options: const AuthenticationOptions(
-          stickyAuth: true,
-          useErrorDialogs: false,
-          biometricOnly: true,
-        ),
-        );
-        if (authenticated){
-          
-          Navigator.pushReplacement(
-            context, 
-            MaterialPageRoute(
-              builder: (context)=> homePage()),
-              );
-        }
-        print("Authenticated: $authenticated ");
-    }on PlatformException catch (e){
-      print(e);
-    }
-  }*/
-
-
-  
-  
 
   Future<void>_getAvailableBiometrics() async {
     List<BiometricType>availableBiometrics =
@@ -343,21 +327,35 @@ class _loginAccountState extends State<loginAccount> {
   }
 
   Future<void> _checkBiometrics() async {
-    late bool deviceSupportsBiometrics;
+    bool deviceSupportsBiometrics;
     try{
-      deviceSupportsBiometrics = 
-        await LocalAuthPlatform.instance.deviceSupportsBiometrics();
-    }on PlatformException catch (e){
-      deviceSupportsBiometrics =false;
+      deviceSupportsBiometrics = await auth.isDeviceSupported();
+    }on PlatformException catch(e){
+      deviceSupportsBiometrics = false;
       print(e);
     }
-    if (!mounted){
-      return;
-    }
 
+    if (!deviceSupportsBiometrics){
+      showDialog(
+        context: context, 
+        builder: (context) => AlertDialog(
+          title: Text('Biometric Authentication Not Supported'),
+          content: Text('No Biometrics enrolled on this device.'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: (){
+                Navigator.of(context).pop();
+              }, 
+              child: Text('OK'),
+              ),
+          ],
+        )
+      );
+    }
     setState(() {
       _canCheckBiometrics = deviceSupportsBiometrics;
     });
+    
   }
 
 

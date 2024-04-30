@@ -38,6 +38,13 @@ final fontBlack2 = TextStyle(
   color: Colors.black,
 );
 
+final fontBlack3 = TextStyle(
+  fontSize: 20,
+  fontWeight: FontWeight.bold,
+  fontFamily: 'Base Semibold',
+  color: Colors.black,
+);
+
 final fontWhite = TextStyle(
   fontSize: 15,
   fontWeight: FontWeight.w500,
