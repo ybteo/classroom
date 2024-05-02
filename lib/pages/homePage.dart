@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/const/constant.dart';
 import 'package:flutter_application_1/const/text_style.dart';
+import 'package:flutter_application_1/login/loginAccount.dart';
+import 'package:flutter_application_1/main.dart';
 
 class homePage extends StatefulWidget {
   
@@ -374,6 +376,51 @@ class _homePageState extends State<homePage> {
                         ],
                       ),
 
+                      const SizedBox(height: 10.0),
+
+                       Row(
+                        children: [
+                          Expanded(
+                            child: FilledButton(
+                              onPressed: (){
+                                Navigator.pushReplacement(
+                                  context, 
+                                  MaterialPageRoute(
+                                    builder: (context)=> MyHomePage(title: 'title',),),
+                                    );
+                              }, 
+                              style: ButtonStyle(
+                                backgroundColor: MaterialStateColor.resolveWith(
+                                  (Set<MaterialState> states){
+                                      if(states.contains(MaterialState.disabled)){
+                                        return primaryPurple.shade300;
+                                      }
+                                         return primaryPurple.shade200;
+                                    }, ),
+                              
+                              shape:MaterialStateProperty.all<RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(13.0),
+                                    ),
+                                    ),
+                              fixedSize: MaterialStateProperty.all<Size>(
+                                      const Size.fromHeight(60.0),
+                                      //const Size.fromWidth(70.0),
+                                    ),),
+                              child: Row(
+                                children: [
+                                  Icon(Icons.logout, color: primaryPurple.shade400, size: 25.0),
+                                  const SizedBox(width: 15.0),
+                                  Text('Log out', style: textBlack),
+                                  const Spacer(),
+                                  Icon(Icons.arrow_forward_ios, color: primaryPurple.shade400, size: 25.0),
+                                ],
+                              ),
+                              ),
+                          ),
+                        ],
+                      ),
+
 
                     ],
                   ),
@@ -391,4 +438,6 @@ class _homePageState extends State<homePage> {
 
     );
   }
+
+ 
 }
