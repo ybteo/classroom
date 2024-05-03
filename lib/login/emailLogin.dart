@@ -155,7 +155,7 @@ class _emailLoginState extends State<emailLogin> {
                            
                               
                             //String enteredEmail = emailController.text;
-                            Navigator.push(
+                            Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(builder: (context) => homePage(),
                               ),
